@@ -8,42 +8,37 @@ import (
 )
 
 
-func func_call() {
+func main(){
 	reader := bufio.NewReader(os.Stdin)
+	for {fmt.Print("$")
+		input, err := reader.ReadString('\n')
 
-	fun := make(map[string]string)
-	fun["echo"] = "echo"
+	if err!= nil {
+		break
+	}
 
-	for {
-		fmt.Print("$ ")
-		input, _ := reader.ReadString('\n')
-		input = strings.TrimSpace(input)
-		args := strings.Fields(input)
-		
-		
-		if len(args) == 0{
-			continue
-			
-		}
-		command := args[0]
+	input = strings.TrimSpace(input)
+	parts := strings.Fields(input)
 
-		switch command{
-		case "exit":
-			os.Exit(0)
-		case "echo":
-			for _,val := range args[1:]{
-					strings.Join(args[1:]," ")
-					fmt.Print(val," ")
-			}
-			fmt.Print("\n")
-		default:
-			fmt.Printf("%s: command not found!!\n",command)
-		}
-			
+	if len(parts) == 0{
+		continue
+	}
+
+	command := parts[0]
+	args := parts[1:]
+
+	if handled := handleBuiltin(command,args);handled{
+		continue
+	}
+	executeExternal(command,args)
+	
 
 	}
+
 }
 
-func main(){
-	func_call()
+func checkNilMethd(err error){
+	if err!= nil{
+		panic(err)
+	}
 }
