@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+var builtin = map[string] bool{
+	"echo" : true,
+	"exit" : true,
+	"type" : true,
+}
 
 func handleBuiltin(command string, args[]string) bool{
 	switch command{
@@ -17,7 +22,21 @@ func handleBuiltin(command string, args[]string) bool{
 	case "echo":
 		handleEcho(args)
 		return true
-	
+	case "type":
+		if len(args) == 0{
+			return true
+		}else{
+			target := args[0]
+
+			if _,ok := builtin[target] ; ok{
+				fmt.Printf("%s is a shell builtin\n",target)
+				return true
+			}else{
+				fmt.Printf("%s: command not found\n",target)
+				return true
+			}
+		}
+
 	default:
 		return false
 	}
