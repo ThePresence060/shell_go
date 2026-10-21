@@ -23,20 +23,10 @@ func handleBuiltin(command string, args[]string) bool{
 		handleEcho(args)
 		return true
 	case "type":
-		if len(args) == 0{
-			return true
-		}else{
-			target := args[0]
-
-			if _,ok := builtin[target] ; ok{
-				fmt.Printf("%s is a shell builtin\n",target)
-				return true
-			}else{
-				fmt.Printf("%s: command not found\n",target)
-				return true
-			}
-		}
-
+		handleType(args)
+		return true
+		
+	
 	default:
 		return false
 	}
@@ -59,4 +49,25 @@ func handleExit(args []string){
 
 func handleEcho(args []string){
 	fmt.Println(strings.Join(args," "))
+}
+
+func handleType(args []string) {
+	if len(args) == 0{
+		return
+	}
+
+	target := args[0]
+
+	if builtin[target]{
+		fmt.Printf("%s is a shell builtin\n",target)
+		return
+	}
+
+	if fullPath := findInPath(target); fullPath!= ""{
+		fmt.Printf("%s is %s\n",target,fullPath)
+		return 
+	}
+
+	fmt.Printf("%s: not found\n",target)
+
 }
